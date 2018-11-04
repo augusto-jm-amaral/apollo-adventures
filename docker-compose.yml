@@ -1,0 +1,30 @@
+version: '2.1'
+services:
+  base:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    environment:
+      - DOTENV_PATH=.env
+  server:
+      extends: base
+      command: npm run start
+      environment:
+        - NODE_ENV=test
+      ports:
+        - 4000:4000
+        - 9000:9000
+      links:
+          - database
+      volumes:
+        - .:/server
+        - vol-node_modules:/server/node_modules
+  database:
+    image: postgres:9.6.5-alpine
+    ports:
+      - 5432:5432
+    volumes:
+      - vol-database:/var/lib/postgresql/data
+volumes:
+  vol-database:
+  vol-node_modules:
